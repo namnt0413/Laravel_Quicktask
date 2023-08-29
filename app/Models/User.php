@@ -9,6 +9,9 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use App\Scopes\ActiveScope;
+use Str;
 
 class User extends Authenticatable
 {
@@ -53,5 +56,32 @@ class User extends Authenticatable
     public function tasks(): HasMany
     {
         return $this->hasMany(Task::class);
+    }
+
+    protected function fullname(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $this->attributes['first_name'] . ' ' . $this->attributes['last_name'],
+        );
+    }
+
+    protected function username(): Attribute
+    {
+        return Attribute::make(
+            set: fn ($value) => Str::slug($value),
+        );
+    }
+
+    // create local scope to get all user with admin permission
+    public function scopeAdmin($query)
+    {
+        return $query->where("is_admin", true);
+    }
+
+    // create global scope to get all user is active
+    protected static function boot()
+    {
+        parent::boot();
+        static::addGlobalScope(new ActiveScope);
     }
 }
