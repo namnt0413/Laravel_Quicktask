@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Http\Request;
+use App\Http\Requests\User\StoreUserRequest;
+use App\Http\Requests\User\UpdateUserRequest;
 
 class UserController extends Controller
 {
@@ -13,7 +14,7 @@ class UserController extends Controller
     public function index()
     {
         return view('users.index', [
-            'users' => User::all(),
+            'users' => User::with('tasks')->get(),
         ]);
     }
 
@@ -22,15 +23,17 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        return view('users.create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
-        //
+        User::create($request->validated());
+
+        return redirect()->route('users.index');
     }
 
     /**
@@ -52,12 +55,11 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, User $user)
+    public function update(UpdateUserRequest $request, User $user)
     {
-        $user->username = $request->name;
-        $user->save();
+        User::find($user->id)->update($request->validated());
 
-        return redirect()->back();
+        return redirect()->route('users.index');
     }
 
     /**
@@ -65,6 +67,9 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        //
+        $user->tasks()->delete();
+        $user->delete();
+
+        return redirect()->back();
     }
 }

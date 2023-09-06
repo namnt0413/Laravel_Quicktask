@@ -31,15 +31,19 @@
                             <td class="text-gray-900 dark:text-gray-100 text-center">{{ $task->name }}</td>
                             <td class="text-gray-900 dark:text-gray-100 text-center">{{ $task->deadline }}</td>
                             <td class="text-gray-900 dark:text-gray-100 text-center">
-                                <x-secondary-button class="mt-4">
+                                <x-secondary-button class="mt-4" onclick="location.href='{{ route('tasks.show', ['task' => $task->id]) }}'">
                                     {{__('Show')}}
                                 </x-secondary-button>
-                                <x-primary-button class="mt-4">
+                                <x-primary-button class="mt-4" onclick="location.href='{{ route('tasks.edit', ['task' => $task->id]) }}'">
                                     {{__('Edit')}}
                                 </x-primary-button>
-                                <x-danger-button class="mt-4">
-                                    {{ __("Delete") }}
-                                </x-danger-button>
+                                <form action="{{ route('tasks.destroy', ['task' => $task->id]) }}" method="POST" class="inline-block">
+                                    @csrf
+                                    @method('delete')
+                                    <x-danger-button class="mt-4">
+                                        {{ __("Delete") }}
+                                    </x-danger-button>
+                                </form>
                             </td>
                         </tr>
                     @endforeach
