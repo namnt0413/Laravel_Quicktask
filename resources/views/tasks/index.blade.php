@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('User List') }}
+            {{ __('Task List') }}
         </h2>
     </x-slot>
 
@@ -9,47 +9,39 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    {{ __("User List") }}
+                    {{ __("Task List") }}
                 </div>
             </div>
-            <x-nav-link :href="route('users.create')">
+            <x-nav-link :href="route('tasks.create')">
                 <x-primary-button class="mt-4">
-                    {{ __("Create New User") }}
+                    {{ __("Create New Task") }}
                 </x-primary-button>
             </x-nav-link>
             <table class="table w-full mt-4">
                 <thead>
                     <tr>
                         <th class="text-gray-900 dark:text-gray-100" scope="col"> # </th>
-                        <th class="text-gray-900 dark:text-gray-100" scope="col"> {{ __("Full Name") }} </th>
-                        <th class="text-gray-900 dark:text-gray-100" scope="col"> {{ __("User Name")}} </th>
-                        <th class="text-gray-900 dark:text-gray-100" scope="col"> {{ __("Task List")}} </th>
+                        <th class="text-gray-900 dark:text-gray-100" scope="col"> {{ __("Name") }} </th>
+                        <th class="text-gray-900 dark:text-gray-100" scope="col"> {{ __("User Id")}} </th>
+                        <th class="text-gray-900 dark:text-gray-100" scope="col"> {{ __("Deadline")}} </th>
                         <th class="text-gray-900 dark:text-gray-100" scope="col"> {{ __("Action") }} </th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($users as $index => $user )
+                    @foreach($tasks as $index => $task )
                         <tr>
                             <th class="text-gray-900 dark:text-gray-100 text-center" scope="row">{{ ++$index  }}</th>
-                            <td class="text-gray-900 dark:text-gray-100 text-center">{{ $user->fullName }}</td>
-                            <td class="text-gray-900 dark:text-gray-100 text-center">{{ $user->username }}</td>
+                            <td class="text-gray-900 dark:text-gray-100 text-center">{{ $task->name }}</td>
+                            <td class="text-gray-900 dark:text-gray-100 text-center">{{ $task->user_id }}</td>
+                            <td class="text-gray-900 dark:text-gray-100 text-center">{{ $task->deadline }}</td>
                             <td class="text-gray-900 dark:text-gray-100 text-center">
-                                <ul>
-                                    @foreach ($user->tasks as $task)
-                                        <li>
-                                            {{ $task->name }}
-                                        </li>
-                                    @endforeach
-                                </ul>
-                            </td>
-                            <td class="text-gray-900 dark:text-gray-100 text-center">
-                                <x-secondary-button class="mt-4" onclick="location.href='{{ route('users.show', ['user' => $user->id]) }}'">
+                                <x-secondary-button class="mt-4" onclick="location.href='{{ route('tasks.show', ['task' => $task->id]) }}'">
                                     {{__('Show')}}
                                 </x-secondary-button>
-                                <x-primary-button class="mt-4" onclick="location.href='{{ route('users.edit', ['user' => $user->id]) }}'">
+                                <x-primary-button class="mt-4" onclick="location.href='{{ route('tasks.edit', ['task' => $task->id]) }}'">
                                     {{__('Edit')}}
                                 </x-primary-button>
-                                <form action="{{ route('users.destroy', ['user' => $user->id]) }}" method="POST" class="inline-block">
+                                <form action="{{ route('tasks.destroy', ['task' => $task->id]) }}" method="POST" class="inline-block">
                                     @csrf
                                     @method('delete')
                                     <x-danger-button class="mt-4">
